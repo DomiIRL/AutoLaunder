@@ -15,12 +15,12 @@ public static class RayMessages
         "{0} has nothing. No run started. Needs cash now. - R",
     };
 
-    // ── Empty (started below capacity — storage now empty after this run) ────
+    // ── Empty (storage now empty after this) ────
 
     private static readonly string[] Empty =
     {
         "Started {0} with ${1:N0} — that's all there was. Safe's empty now. - R",
-        "{0} running but safe's tapped. Only had ${1:N0}. Refill soon. - R",
+        "{0} safe's tapped. Only had ${1:N0}. Refill soon. - R",
         "Short run at {0}, ${1:N0} used. Nothing left in storage. - R",
     };
 
