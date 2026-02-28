@@ -19,17 +19,17 @@ public static class CompleteOperationPatch
     [HarmonyPostfix]
     public static void Postfix(ref Business __instance, ref LaunderingOperation op)
     { 
-        Debug.MessageTest.Run();
+        // For debugging: test a few combinations
+        // Debug.MessageTest.Run();
         
-        
-        // Count operations still running AFTER this one completed.
+        // Count operations still running AFTER this one completed
         // CompleteOperation removes `op` before calling postfix, so any remaining
-        // entries in LaunderingOperations are truly still active.
+        // entries in LaunderingOperations are truly still active
         int activeOperations = __instance.LaunderingOperations.Count;
 
         if (Config.WaitForLastOperation.Value && activeOperations > 0)
         {
-            // Only send Ray's waiting message once per wait cycle, not on every completion.
+            // only send Ray's waiting message once per wait cycle, not on every completion
             if (_waitingNotified.Add(__instance.propertyName))
             {
                 MelonLogger.Msg($"[AutoLaunder] WaitForLastOperation enabled — {activeOperations} operation(s) still running at {__instance.propertyName}. Notifying once.");
@@ -42,17 +42,17 @@ public static class CompleteOperationPatch
             return;
         }
 
-        // Clear the waiting notification so future waits can trigger Ray again.
+        // clear the waiting notification so future waits can trigger ray again
         _waitingNotified.Remove(__instance.propertyName);
 
         float capacity = __instance.LaunderCapacity;
 
-        // Subtract capacity already committed to any remaining operations.
+        // subtract capacity already committed to any remaining operations
         foreach (var operation in __instance.LaunderingOperations)
             capacity -= operation.amount;
 
-        // If other running operations have already consumed all available capacity,
-        // there is nothing to start and nothing meaningful to report.
+        // if other running operations have already consumed all available capacity,
+        // there is nothing to start and nothing meaningful to report
         if (capacity <= 0f)
         {
             MelonLogger.Msg($"[AutoLaunder] No capacity slot available at {__instance.propertyName} (consumed by other running operations). Skipping.");

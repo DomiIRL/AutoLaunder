@@ -65,13 +65,17 @@ public static class RayMessages
 
         string prefix = diff switch
         {
-            0              => "",
-            > 0 and <= 100 => "just under ",
-            > 0 and <= 250 => "under ",
-            > 0            => "almost ",
-            >= -100        => "just over ",
-            >= -250        => "over ",
-            _              => "about ",
+            0               => "",
+            > 0 and <= 50   => "barely under ",
+            > 0 and <= 100  => "just under ",
+            > 0 and <= 200  => "a bit under ",
+            > 0 and <= 350  => "under ",
+            > 0             => "almost ",
+            >= -50          => "barely over ",
+            >= -100         => "just over ",
+            >= -200         => "a bit over ",
+            >= -350         => "over ",
+            _               => "about ",
         };
 
         string slang = rounded switch
@@ -81,7 +85,7 @@ public static class RayMessages
             1000                 => "a grand",
             1500                 => "fifteen hundred",
             2000                 => "two grand",
-            2500                 => "twenty five hundred",
+            2500                 => "two and a half grand",
             3000                 => "three grand",
             3500                 => "three and a half grand",
             4000                 => "four grand",
