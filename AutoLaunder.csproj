@@ -22,7 +22,10 @@
       <HintPath>libs\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
-      <HintPath>MelonLoader/MelonLoader.dll</HintPath>
+      <HintPath>libs\MelonLoader.dll</HintPath>
+    </Reference>
+    <Reference Include="ModManager&amp;PhoneApp">
+      <HintPath>libs\ModManager&amp;PhoneApp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>MelonLoader/UnityEngine.dll</HintPath>

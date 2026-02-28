@@ -2,44 +2,65 @@ using UnityEngine;
 
 namespace AutoLaunder.Models;
 
-/// <summary>
-/// All text messages sent by Ray regarding laundering status.
-/// </summary>
 public static class RayMessages
 {
     private static readonly System.Random _rng = new();
 
-    // ── Empty ────────────────────────────────────────────────────────────────
+    // ── Dry (no cash at all — nothing started) ───────────────────────────────
+
+    private static readonly string[] Dry =
+    {
+        "{0} is bone dry. Nothing to run — get cash in the safe. - R",
+        "Couldn't start {0}. Safe's empty. Fill it up. - R",
+        "{0} has nothing. No run started. Needs cash now. - R",
+    };
+
+    // ── Empty (started below capacity — storage now empty after this run) ────
 
     private static readonly string[] Empty =
     {
-        "Heads up — {0} just ran dry. Not enough cash in storage to restart laundering. Get money in there. — Ray",
-        "Your {0} ground to a halt. Safe's empty, nothing left to launder. Sort it out. — Ray",
-        "Just so you know, {0} stopped. Pulled everything and it still wasn't enough. Refill the safe. — Ray",
+        "Started {0} with ${1:N0} — that's all there was. Safe's empty now. - R",
+        "{0} running but safe's tapped. Only had ${1:N0}. Refill soon. - R",
+        "Short run at {0}, ${1:N0} used. Nothing left in storage. - R",
     };
 
-    // ── Almost Empty (≤1 run left) ────────────────────────────────────────────
+    // ── Almost Empty (full capacity, but ≤1 full run left in storage) ────────
 
     private static readonly string[] AlmostEmpty =
     {
-        "Restarted {0}, but you've only got ${1:N0} left in storage. That's maybe one more run. Top it up. — Ray",
-        "{0} is running, but barely. ${1:N0} left — one more cycle at best. Don't let it run out. — Ray",
-        "Got {0} going again. Fair warning: ${1:N0} in storage isn't much. One run left, maybe. — Ray",
+        "{0} running full. Heads up — only ${1:N0} left, maybe one run. - R",
+        "Full run at {0}. But ${1:N0} in safe, won't last long. - R",
+        "{0} is good for now. ${1:N0} left though — top it up soon. - R",
     };
 
-    // ── Healthy (2+ runs left) ────────────────────────────────────────────────
+    // ── Healthy (full capacity, 2+ full runs left in storage) ────────────────
 
     private static readonly string[] Healthy =
     {
-        "Laundering restarted at {0}. ${1:N0} still sitting in storage — roughly {2} more runs. We're good. — Ray",
-        "{0} back up at full capacity. You've got ${1:N0} left, about {2} runs worth. Keep it coming. — Ray",
-        "All running at {0}. ${1:N0} in storage, {2} runs left before you need to refill. Nice. — Ray",
+        "{0} running full. ${1:N0} left, ~{2} runs. We're good. - R",
+        "All good at {0}. Full run, ${1:N0} in safe, {2} runs left. - R",
+        "{0} sorted. ${1:N0} sitting there, {2} more runs easy. - R",
+    };
+
+    // ── Waiting (last operation still running) ────────────────────────────────
+
+    private static readonly string[] Waiting =
+    {
+        "{0} still has {1} run(s) going. Waiting to restart full. - R",
+        "Holding off on {0}. {1} op(s) active,'ll restart at cap. - R",
+        "{0} not done yet — {1} run(s) left. Full restart after. - R",
     };
 
     // ── Public helpers ────────────────────────────────────────────────────────
 
-    public static string GetEmpty(string businessName)
-        => string.Format(Pick(Empty), businessName);
+    public static string GetWaiting(string businessName, int activeOperations)
+        => string.Format(Pick(Waiting), businessName, activeOperations);
+
+    public static string GetDry(string businessName)
+        => string.Format(Pick(Dry), businessName);
+
+    public static string GetEmpty(string businessName, float cashTaken)
+        => string.Format(Pick(Empty), businessName, Mathf.FloorToInt(cashTaken));
 
     public static string GetAlmostEmpty(string businessName, float cashLeft)
         => string.Format(Pick(AlmostEmpty), businessName, Mathf.FloorToInt(cashLeft));

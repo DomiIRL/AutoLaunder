@@ -71,6 +71,6 @@ public static class CashStorageService
             if (remaining <= 0f) break;
         }
 
-        return Mathf.CeilToInt(remaining);
+        return remaining;
     }
 }
