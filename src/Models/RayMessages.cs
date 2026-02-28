@@ -4,7 +4,6 @@ namespace AutoLaunder.Models;
 
 public static class RayMessages
 {
-    private static readonly System.Random _rng = new();
 
     // ── Dry (no cash at all — nothing started) ───────────────────────────────
 
@@ -28,9 +27,9 @@ public static class RayMessages
 
     private static readonly string[] AlmostEmpty =
     {
-        "{0} running full. Heads up — only ${1:N0} left, maybe one run. - R",
-        "Full run at {0}. But ${1:N0} in safe, won't last long. - R",
-        "{0} is good for now. ${1:N0} left though — top it up soon. - R",
+        "{0} running, but safe's nearly gone. ${1:N0} left — one run max. - R",
+        "Warning — {0} won't last. ${1:N0} in there, that's it. - R",
+        "Get cash in {0} soon. ${1:N0} left, barely another run. - R",
     };
 
     // ── Healthy (full capacity, 2+ full runs left in storage) ────────────────
@@ -69,5 +68,5 @@ public static class RayMessages
         => string.Format(Pick(Healthy), businessName, Mathf.FloorToInt(cashLeft), runsLeft);
 
     private static string Pick(string[] pool)
-        => pool[_rng.Next(pool.Length)];
+        => pool[System.Random.Shared.Next(pool.Length)];
 }

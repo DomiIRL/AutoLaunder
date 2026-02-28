@@ -1,7 +1,6 @@
 using System.Linq;
 using Il2CppScheduleOne.Messaging;
 using Il2CppScheduleOne.NPCs;
-using Il2CppScheduleOne.UI.Phone.Messages;
 using MelonLoader;
 using UnityEngine;
 
@@ -35,32 +34,23 @@ public static class CustomMessengerService
         }
     }
 
-    /// <summary>Clears the cached conversation (e.g. on scene unload).</summary>
-    public static void Reset() => _conversation = null;
-
     private static MSGConversation GetOrCreateConversation()
     {
         if (_conversation != null)
+        {
             return _conversation;
+        }
 
         NPC ray = Object.FindObjectsOfType<NPC>()
             .FirstOrDefault(npc => npc.ID == RayNpcId);
-        
-        foreach (NPC npc in Object.FindObjectsOfType<NPC>())
-        {
-            MelonLogger.Msg($"[AutoLaunder] Found NPC: {npc.ID}");
-        }
 
         if (ray == null)
         {
             MelonLogger.Warning("[AutoLaunder] Ray not found in scene — cannot create R conversation.");
             return null;
         }
-
-        // Create a new conversation with Ray as the NPC backing (avatar/photo) but
-        // with a distinct contact name so it appears as a separate thread on the phone.
+        
         _conversation = new MSGConversation(ray, ContactName);
-
         return _conversation;
     }
 }

@@ -40,15 +40,12 @@ namespace AutoLaunder
             LoggerInstance.Msg("[AutoLaunder] Initialized.");
         }
 
-        public override void OnSceneWasUnloaded(int buildIndex, string sceneName)
-        {
-            Services.CustomMessengerService.Reset();
-        }
-
         public override void OnDeinitializeMelon()
         {
             if (_modManagerFound)
+            {
                 UnsubscribeFromModManagerEvents();
+            }
         }
 
         private void SubscribeToModManagerEvents()
