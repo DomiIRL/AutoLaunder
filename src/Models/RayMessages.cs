@@ -54,11 +54,28 @@ public static class RayMessages
     public static string GetHealthy(string businessName, int runsLeft, float cashLeft)
         => string.Format(Pick(Healthy), businessName, SlangCash(Mathf.FloorToInt(cashLeft)), SlangRuns(runsLeft));
 
+    // Indexed variants for deterministic testing
+    internal static string GetDry(string businessName, int variant)
+        => string.Format(Pick(Dry, variant), businessName);
+
+    internal static string GetEmpty(string businessName, float cashTaken, int variant)
+        => string.Format(Pick(Empty, variant), businessName, SlangCash(Mathf.FloorToInt(cashTaken)));
+
+    internal static string GetAlmostEmpty(string businessName, float cashLeft, int variant)
+        => string.Format(Pick(AlmostEmpty, variant), businessName, SlangCash(Mathf.FloorToInt(cashLeft)));
+
+    internal static string GetHealthy(string businessName, int runsLeft, float cashLeft, int variant)
+        => string.Format(Pick(Healthy, variant), businessName, SlangCash(Mathf.FloorToInt(cashLeft)), SlangRuns(runsLeft));
+
+    internal static string GetWaiting(string businessName, int activeOperations, int variant)
+        => string.Format(Pick(Waiting, variant), businessName, SlangOps(activeOperations));
+
     // ── Slang formatters ─────────────────────────────────────────────────────
 
     private static string SlangCash(int amount)
     {
-        if (amount == 0) return "nothing";
+        if (amount == 0)   return "nothing";
+        if (amount < 350)  return "pocket change"; 
 
         int rounded = Mathf.RoundToInt(amount / 500f) * 500;
         int diff = rounded - amount;
@@ -80,7 +97,6 @@ public static class RayMessages
 
         string slang = rounded switch
         {
-            < 500                => "pocket change",
             500                  => "five hundred",
             1000                 => "a grand",
             1500                 => "fifteen hundred",
@@ -125,4 +141,7 @@ public static class RayMessages
 
     private static string Pick(string[] pool)
         => pool[System.Random.Shared.Next(pool.Length)];
+
+    internal static string Pick(string[] pool, int index)
+        => pool[index % pool.Length];
 }

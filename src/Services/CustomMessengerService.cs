@@ -51,6 +51,7 @@ public static class CustomMessengerService
         }
         
         _conversation = new MSGConversation(ray, ContactName);
+        _conversation.SetIsKnown(false); // hide name and avatar
         return _conversation;
     }
 }
