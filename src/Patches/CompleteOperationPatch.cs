@@ -18,7 +18,10 @@ public static class CompleteOperationPatch
 
     [HarmonyPostfix]
     public static void Postfix(ref Business __instance, ref LaunderingOperation op)
-    {
+    { 
+        Debug.MessageTest.Run();
+        
+        
         // Count operations still running AFTER this one completed.
         // CompleteOperation removes `op` before calling postfix, so any remaining
         // entries in LaunderingOperations are truly still active.

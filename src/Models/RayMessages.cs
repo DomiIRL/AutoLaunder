@@ -4,68 +4,120 @@ namespace AutoLaunder.Models;
 
 public static class RayMessages
 {
-
-    // ── Dry (no cash at all — nothing started) ───────────────────────────────
-
     private static readonly string[] Dry =
     {
-        "{0} is bone dry. Nothing to run — get cash in the safe. - R",
-        "Couldn't start {0}. Safe's empty. Fill it up. - R",
-        "{0} has nothing. No run started. Needs cash now. - R",
+        "Nothing to run at {0}. Safe's empty, didn't start. Get cash in. - R",
+        "Dry over at {0}. No run, nothing. Fill it up. - R",
+        "Couldn't start {0} — bone dry. Drop some paper in there. - R",
     };
-
-    // ── Empty (storage now empty after this) ────
 
     private static readonly string[] Empty =
     {
-        "Started {0} with ${1:N0} — that's all there was. Safe's empty now. - R",
-        "{0} safe's tapped. Only had ${1:N0}. Refill soon. - R",
-        "Short run at {0}, ${1:N0} used. Nothing left in storage. - R",
+        "Tapped out at {0}. Only had {1}, used it all. Refill soon. - R",
+        "Short run at {0} with {1}. Safe's gone now. Top it up. - R",
+        "Running on fumes at {0}. Used {1}, nothing left after this. - R",
     };
-
-    // ── Almost Empty (full capacity, but ≤1 full run left in storage) ────────
 
     private static readonly string[] AlmostEmpty =
     {
-        "{0} running, but safe's nearly gone. ${1:N0} left — one run max. - R",
-        "Warning — {0} won't last. ${1:N0} in there, that's it. - R",
-        "Get cash in {0} soon. ${1:N0} left, barely another run. - R",
+        "Getting low at {0}. Full run but only {1} left. Worth a look. - R",
+        "Running but thin at {0} — {1} left. Wouldn't wait too long. - R",
+        "Won't last at {0}. {1} in the safe. Top it before next cycle. - R",
     };
-
-    // ── Healthy (full capacity, 2+ full runs left in storage) ────────────────
 
     private static readonly string[] Healthy =
     {
-        "{0} running full. ${1:N0} left, ~{2} runs. We're good. - R",
-        "All good at {0}. Full run, ${1:N0} in safe, {2} runs left. - R",
-        "{0} sorted. ${1:N0} sitting there, {2} more runs easy. - R",
+        "All good at {0}. Full run, {1} in safe, {2}. Don't worry about it. - R",
+        "Sorted at {0}. {1} left, {2}. We're sitting fine. - R",
+        "{0} running smooth. {1} in there, {2}. Nothing to worry about. - R",
     };
-
-    // ── Waiting (last operation still running) ────────────────────────────────
 
     private static readonly string[] Waiting =
     {
-        "{0} still has {1} run(s) going. Waiting to restart full. - R",
-        "Holding off on {0}. {1} op(s) active,'ll restart at cap. - R",
-        "{0} not done yet — {1} run(s) left. Full restart after. - R",
+        "Still running at {0}, {1} in progress. Holding off til it's done. - R",
+        "Letting {0} finish first — {1} still going. Full restart after. - R",
+        "{0} not done yet, {1} in progress. Better to restart full. - R",
     };
 
-    // ── Public helpers ────────────────────────────────────────────────────────
-
     public static string GetWaiting(string businessName, int activeOperations)
-        => string.Format(Pick(Waiting), businessName, activeOperations);
+        => string.Format(Pick(Waiting), businessName, SlangOps(activeOperations));
 
     public static string GetDry(string businessName)
         => string.Format(Pick(Dry), businessName);
 
     public static string GetEmpty(string businessName, float cashTaken)
-        => string.Format(Pick(Empty), businessName, Mathf.FloorToInt(cashTaken));
+        => string.Format(Pick(Empty), businessName, SlangCash(Mathf.FloorToInt(cashTaken)));
 
     public static string GetAlmostEmpty(string businessName, float cashLeft)
-        => string.Format(Pick(AlmostEmpty), businessName, Mathf.FloorToInt(cashLeft));
+        => string.Format(Pick(AlmostEmpty), businessName, SlangCash(Mathf.FloorToInt(cashLeft)));
 
     public static string GetHealthy(string businessName, int runsLeft, float cashLeft)
-        => string.Format(Pick(Healthy), businessName, Mathf.FloorToInt(cashLeft), runsLeft);
+        => string.Format(Pick(Healthy), businessName, SlangCash(Mathf.FloorToInt(cashLeft)), SlangRuns(runsLeft));
+
+    // ── Slang formatters ─────────────────────────────────────────────────────
+
+    private static string SlangCash(int amount)
+    {
+        if (amount == 0) return "nothing";
+
+        int rounded = Mathf.RoundToInt(amount / 500f) * 500;
+        int diff = rounded - amount;
+
+        string prefix = diff switch
+        {
+            0              => "",
+            > 0 and <= 100 => "just under ",
+            > 0 and <= 250 => "under ",
+            > 0            => "almost ",
+            >= -100        => "just over ",
+            >= -250        => "over ",
+            _              => "about ",
+        };
+
+        string slang = rounded switch
+        {
+            < 500                => "pocket change",
+            500                  => "five hundred",
+            1000                 => "a grand",
+            1500                 => "fifteen hundred",
+            2000                 => "two grand",
+            2500                 => "twenty five hundred",
+            3000                 => "three grand",
+            3500                 => "three and a half grand",
+            4000                 => "four grand",
+            4500                 => "four and a half grand",
+            5000                 => "five grand",
+            <= 10000 when rounded % 1000 == 0 => $"{rounded / 1000} grand",
+            <= 10000             => $"~{rounded / 1000}k",
+            _                    => $"{rounded / 1000}k",
+        };
+
+        return prefix + slang;
+    }
+
+    private static string SlangRuns(int runs)
+    {
+        return runs switch
+        {
+            1  => "one run left", // will never be used currently but good to have the singular case covered in case of future changes
+            2  => "two runs left",
+            3  => "three runs left",
+            4  => "four runs left",
+            5  => "five runs left",
+            _  => $"{runs} runs left",
+        };
+    }
+
+    private static string SlangOps(int ops)
+    {
+        return ops switch
+        {
+            1 => "one op",
+            2 => "two ops",
+            3 => "three ops",
+            _ => $"{ops} ops",
+        };
+    }
 
     private static string Pick(string[] pool)
         => pool[System.Random.Shared.Next(pool.Length)];
