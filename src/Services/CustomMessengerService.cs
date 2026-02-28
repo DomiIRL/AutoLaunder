@@ -26,7 +26,6 @@ public static class CustomMessengerService
             }
 
             conv.SendMessage(new Message(message, Message.ESenderType.Other, true), notify: true, network: false);
-            MelonLogger.Msg($"[AutoLaunder] [R] {message}");
         }
         catch (System.Exception ex)
         {

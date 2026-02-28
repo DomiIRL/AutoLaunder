@@ -32,12 +32,11 @@ public static class CompleteOperationPatch
             // only send Ray's waiting message once per wait cycle, not on every completion
             if (_waitingNotified.Add(__instance.propertyName))
             {
-                MelonLogger.Msg($"[AutoLaunder] WaitForLastOperation enabled — {activeOperations} operation(s) still running at {__instance.propertyName}. Notifying once.");
                 RayMessengerService.SendWaitingMessage(__instance.propertyName, activeOperations);
             }
             else
             {
-                MelonLogger.Msg($"[AutoLaunder] WaitForLastOperation enabled — {activeOperations} operation(s) still running at {__instance.propertyName}. Skipping (already notified).");
+                MelonLogger.Msg($"[AutoLaunder] {__instance.propertyName} — still waiting, already notified.");
             }
             return;
         }
@@ -54,17 +53,17 @@ public static class CompleteOperationPatch
         // if other running operations have already consumed all available capacity,
         // there is nothing to start and nothing meaningful to report
         if (capacity <= 0f)
+            return;
+
+        // if only max capacity is on, check upfront before touching the storage.
+        if (Config.OnlyStartAtMaxCapacity.Value && CashStorageService.GetTotalCash(__instance) < capacity)
         {
-            MelonLogger.Msg($"[AutoLaunder] No capacity slot available at {__instance.propertyName} (consumed by other running operations). Skipping.");
+            RayMessengerService.SendDryMessage(__instance.propertyName);
             return;
         }
 
-        MelonLogger.Msg($"[AutoLaunder] Attempting to fund laundering at capacity: {capacity}");
-
         float remaining = CashStorageService.DrainCashFromStorage(__instance, capacity);
         float cashTaken = capacity - remaining;
-
-        MelonLogger.Msg($"[AutoLaunder] Cash taken: {cashTaken}");
 
         if (cashTaken > 0 && InstanceFinder.IsServer)
         {
@@ -76,7 +75,6 @@ public static class CompleteOperationPatch
         float totalCashLeft = CashStorageService.GetTotalCash(__instance);
         int runsLeft = CashStorageService.GetRunsLeft(totalCashLeft, __instance.LaunderCapacity);
 
-        MelonLogger.Msg($"[AutoLaunder] Cash left in storage: ${totalCashLeft} | Estimated runs left: {runsLeft}");
 
         RayMessengerService.SendStatusMessage(__instance.propertyName, cashTaken, __instance.LaunderCapacity, runsLeft, totalCashLeft);
     }
