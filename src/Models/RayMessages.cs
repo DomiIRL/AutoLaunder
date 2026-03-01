@@ -6,61 +6,61 @@ public static class RayMessages
 {
     private static readonly string[] Dry =
     {
-        "Nothing to run at {0}. Safe's empty, didn't start. Get cash in. - R",
-        "Dry over at {0}. No run, nothing. Fill it up. - R",
-        "Couldn't start {0} — bone dry. Drop some paper in there. - R",
+        "Nothing to run at {0}. Safe's empty, didn't start. Get cash in.",
+        "Dry over at {0}. No run, nothing. Fill it up.",
+        "Couldn't start {0} — bone dry. Drop some paper in there.",
     };
 
     private static readonly string[] Empty =
     {
-        "Tapped out at {0}. Only had {1}, used it all. Refill soon. - R",
-        "Short run at {0} with {1}. Safe's gone now. Top it up. - R",
-        "Running on fumes at {0}. Used {1}, nothing left after this. - R",
+        "Tapped out at {0}. Only had {1}, used it all. Refill soon.",
+        "Short run at {0} with {1}. Safe's gone now. Top it up.",
+        "Running on fumes at {0}. Used {1}, nothing left after this.",
     };
 
     private static readonly string[] AlmostEmpty =
     {
-        "Getting low at {0}. Full run but only {1} left. Worth a look. - R",
-        "Running but thin at {0} — {1} left. Wouldn't wait too long. - R",
-        "Won't last at {0}. {1} in the safe. Top it before next cycle. - R",
+        "Getting low at {0}. Full run but only {1} left. Worth a look.",
+        "Running but thin at {0} — {1} left. Wouldn't wait too long.",
+        "Won't last at {0}. {1} in the safe. Top it before next cycle.",
     };
 
     private static readonly string[] Healthy =
     {
-        "All good at {0}. Full run, {1} in safe, {2}. Don't worry about it. - R",
-        "Sorted at {0}. {1} left, {2}. We're sitting fine. - R",
-        "{0} running smooth. {1} in there, {2}. Nothing to worry about. - R",
+        "All good at {0}. Full run, {1} in safe, {2}. Don't worry about it.",
+        "Sorted at {0}. {1} left, {2}. We're sitting fine.",
+        "{0} running smooth. {1} in there, {2}. Nothing to worry about.",
     };
 
     private static readonly string[] Waiting =
     {
-        "Still running at {0}, {1} in progress. Holding off til it's done. - R",
-        "Letting {0} finish first — {1} still going. Full restart after. - R",
-        "{0} not done yet, {1} in progress. Better to restart full. - R",
+        "Still running at {0}, {1} in progress. Holding off til it's done.",
+        "Letting {0} finish first — {1} still going. Full restart after.",
+        "{0} not done yet, {1} in progress. Better to restart full.",
     };
 
     // {0} = natural joined list of business names running under capacity
     private static readonly string[] LoginUnderCapacity =
     {
-        "Running under capacity at {0} — could be doing more. - R",
-        "Not hitting full loads at {0}. Worth topping up. - R",
-        "{0} is running short. Should fix it next cycle. - R",
+        "Running under capacity at {0} — could be doing more.",
+        "Not hitting full loads at {0}. Worth topping up.",
+        "{0} is running short. Should fix it next cycle.",
     };
 
     // {0} = natural joined list of business names with no ops running
     private static readonly string[] LoginIdle =
     {
-        "Nothing running at {0}. Check the safes. - R",
-        "Ops stopped at {0}. Might be dry, might not. Worth checking. - R",
-        "{0} is just sitting there. Ran out of paper? - R",
+        "Nothing running at {0}. Check the safes.",
+        "Ops stopped at {0}. Might be dry, might not. Worth checking.",
+        "{0} is just sitting there. Ran out of paper?",
     };
 
     // {0} = under-capacity list, {1} = idle list
     private static readonly string[] LoginMixed =
     {
-        "Running under load at {0}. Also nothing going on at {1} — check those. - R",
-        "Short on capacity at {0}. Plus {1} has stopped entirely. - R",
-        "{0} isn't running full. And {1} isn't even running at all. - R",
+        "Running under load at {0}. Also nothing going on at {1} — check those.",
+        "Short on capacity at {0}. Plus {1} has stopped entirely.",
+        "{0} isn't running full. And {1} isn't even running at all.",
     };
 
     public static string GetWaiting(string businessName, int activeOperations)

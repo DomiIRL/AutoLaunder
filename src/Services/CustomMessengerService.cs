@@ -25,11 +25,10 @@ public static class CustomMessengerService
             if (conv == null)
             {
                 MelonLogger.Warning("[AutoLaunder] Could not get R conversation — falling back to log only.");
-                MelonLogger.Msg($"[AutoLaunder] [R] {message}");
                 return;
             }
 
-            conv.SendMessage(new Message(message, Message.ESenderType.Other, true), notify: true, network: false);
+            conv.SendMessage(new Message(message + " - R", Message.ESenderType.Other, true), notify: true, network: false);
         }
         catch (System.Exception ex)
         {
