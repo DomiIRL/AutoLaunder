@@ -57,6 +57,7 @@ namespace AutoLaunder
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             if (sceneName?.Contains("Main") != true || _loginSummaryCoroutineStarted) return;
+            if (!Config.SendLoginSummary.Value) return;
 
             _loginSummaryCoroutineStarted = true;
             MelonCoroutines.Start(LoginSummaryService.Run());
