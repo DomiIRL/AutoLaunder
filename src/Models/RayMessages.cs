@@ -44,7 +44,7 @@ public static class RayMessages
     {
         "Running under capacity at {0} — could be doing more. - R",
         "Not hitting full loads at {0}. Worth topping up. - R",
-        "{0} is running short. Fix it next cycle. - R",
+        "{0} is running short. Should fix it next cycle. - R",
     };
 
     // {0} = natural joined list of business names with no ops running
@@ -52,15 +52,15 @@ public static class RayMessages
     {
         "Nothing running at {0}. Check the safes. - R",
         "Ops stopped at {0}. Might be dry, might not. Worth checking. - R",
-        "{0} is just sitting there. No ops running. - R",
+        "{0} is just sitting there. Ran out of paper? - R",
     };
 
     // {0} = under-capacity list, {1} = idle list
     private static readonly string[] LoginMixed =
     {
-        "Running under load at {0}. Also nothing going at {1} — check those. - R",
+        "Running under load at {0}. Also nothing going on at {1} — check those. - R",
         "Short on capacity at {0}. Plus {1} has stopped entirely. - R",
-        "{0} isn't running full. And {1} isn't even running. - R",
+        "{0} isn't running full. And {1} isn't even running at all. - R",
     };
 
     public static string GetWaiting(string businessName, int activeOperations)
