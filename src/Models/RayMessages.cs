@@ -39,25 +39,82 @@ public static class RayMessages
         "{0} not done yet, {1} in progress. Better to restart full.",
     };
 
-    private static readonly string[] LoginUnderCapacity =
+    private static readonly string[] LoginUnderCapacitySingular =
     {
         "Running under capacity at {0} — could be doing more.",
         "Not hitting full loads at {0}. Worth topping up.",
         "{0} is running short. Should fix it next cycle.",
     };
 
-    private static readonly string[] LoginIdle =
+    private static readonly string[] LoginUnderCapacityPlural =
     {
-        "Nothing running at {0}. Check the safes.",
+        "Running under capacity at {0} — could be doing more.",
+        "Not hitting full loads at {0}. Worth topping up.",
+        "{0} are running short. Should fix it next cycle.",
+    };
+
+    private static readonly string[] LoginIdleSingular =
+    {
+        "Nothing running at {0}. Check the safe.",
         "Ops stopped at {0}. Might be dry, might not. Worth checking.",
         "{0} is just sitting there. Ran out of paper?",
     };
 
-    private static readonly string[] LoginMixed =
+    private static readonly string[] LoginIdlePlural =
+    {
+        "Nothing running at {0}. Check the safes.",
+        "Ops stopped at {0}. Might be dry, might not. Worth checking.",
+        "{0} are just sitting there. Ran out of paper?",
+    };
+
+    private static readonly string[] LoginMixedSingularSingular =
     {
         "Running under load at {0}. Also nothing going on at {1} — check those.",
         "Short on capacity at {0}. Plus {1} has stopped entirely.",
         "{0} isn't running full. And {1} isn't even running at all.",
+    };
+
+    private static readonly string[] LoginMixedPluralSingular =
+    {
+        "Running under load at {0}. Also nothing going on at {1} — check it.",
+        "Short on capacity at {0}. Plus {1} has stopped entirely.",
+        "{0} aren't running full. And {1} isn't even running at all.",
+    };
+
+    private static readonly string[] LoginMixedSingularPlural =
+    {
+        "Running under load at {0}. Also nothing going on at {1} — check those.",
+        "Short on capacity at {0}. Plus {1} have stopped entirely.",
+        "{0} isn't running full. And {1} aren't even running at all.",
+    };
+
+    private static readonly string[] LoginMixedPluralPlural =
+    {
+        "Running under load at {0}. Also nothing going on at {1} — check those.",
+        "Short on capacity at {0}. Plus {1} have stopped entirely.",
+        "{0} aren't running full. And {1} aren't even running at all.",
+    };
+
+    private static readonly string[] LoginSmoothSuffix =
+    {
+        " All else running smooth.",
+        " Rest is fine.",
+        " Everything else is good.",
+        " Other than that, no issues.",
+    };
+
+    private static readonly string[] LoginSmoothSingular =
+    {
+        "All good. {0} running full load, nothing to touch.",
+        "Everything's at cap. {0} sorted, don't worry about it.",
+        "No issues. {0} running clean. You're good.",
+    };
+
+    private static readonly string[] LoginSmoothPlural =
+    {
+        "All good. {0} running full load, nothing to touch.",
+        "Everything's at cap. {0} sorted, don't worry about it.",
+        "No issues. {0} all running clean. You're good.",
     };
 
     public static string GetWaiting(string businessName, int activeOperations)
@@ -75,14 +132,35 @@ public static class RayMessages
     public static string GetHealthy(string businessName, int runsLeft, float cashLeft)
         => string.Format(Pick(Healthy), businessName, SlangCash(Mathf.FloorToInt(cashLeft)), SlangRuns(runsLeft));
 
-    public static string GetLoginUnderCapacity(string underCapacityList)
-        => string.Format(Pick(LoginUnderCapacity), underCapacityList);
+    public static string GetLoginUnderCapacity(string list, int count, int smoothCount = 0)
+    {
+        var pool = count == 1 ? LoginUnderCapacitySingular : LoginUnderCapacityPlural;
+        return string.Format(Pick(pool), list) + SmoothSuffix(smoothCount);
+    }
 
-    public static string GetLoginIdle(string idleList)
-        => string.Format(Pick(LoginIdle), idleList);
+    public static string GetLoginIdle(string list, int count, int smoothCount = 0)
+    {
+        var pool = count == 1 ? LoginIdleSingular : LoginIdlePlural;
+        return string.Format(Pick(pool), list) + SmoothSuffix(smoothCount);
+    }
 
-    public static string GetLoginMixed(string underCapacityList, string idleList)
-        => string.Format(Pick(LoginMixed), underCapacityList, idleList);
+    public static string GetLoginMixed(string underCapacityList, int underCount, string idleList, int idleCount, int smoothCount = 0)
+    {
+        var pool = (underCount == 1, idleCount == 1) switch
+        {
+            (true,  true)  => LoginMixedSingularSingular,
+            (false, true)  => LoginMixedPluralSingular,
+            (true,  false) => LoginMixedSingularPlural,
+            (false, false) => LoginMixedPluralPlural,
+        };
+        return string.Format(Pick(pool), underCapacityList, idleList) + SmoothSuffix(smoothCount);
+    }
+
+    public static string GetLoginSmooth(string list, int count)
+    {
+        var pool = count == 1 ? LoginSmoothSingular : LoginSmoothPlural;
+        return string.Format(Pick(pool), list);
+    }
 
     internal static string GetDry(string businessName, int variant)
         => string.Format(Pick(Dry, variant), businessName);
@@ -170,6 +248,9 @@ public static class RayMessages
             _ => $"{ops} ops",
         };
     }
+
+    private static string SmoothSuffix(int smoothCount)
+        => smoothCount > 0 ? Pick(LoginSmoothSuffix) : "";
 
     private static string Pick(string[] pool)
         => pool[System.Random.Shared.Next(pool.Length)];

@@ -61,14 +61,13 @@ public static class LoginSummaryService
 
             var underCapacity = new List<string>();
             var idle          = new List<string>();
+            var smooth        = new List<string>();
 
             foreach (var biz in businesses)
             {
                 if (!biz.IsOwned)
-                {
                     continue;
-                }
-                
+
                 int ops = biz.LaunderingOperations.Count;
                 float capacity = biz.LaunderCapacity;
 
@@ -76,14 +75,12 @@ public static class LoginSummaryService
                 {
                     float committed = 0f;
                     foreach (var operation in biz.LaunderingOperations)
-                    {
                         committed += operation.amount;
-                    }
 
                     if (committed < capacity)
-                    {
                         underCapacity.Add(biz.propertyName);
-                    }
+                    else
+                        smooth.Add(biz.propertyName);
                 }
                 else
                 {
@@ -91,19 +88,25 @@ public static class LoginSummaryService
                     idle.Add(biz.propertyName);
                 }
             }
-            
+
             string message;
             if (underCapacity.Count > 0 && idle.Count > 0)
             {
-                message = RayMessages.GetLoginMixed(NaturalJoin(underCapacity), NaturalJoin(idle));
-            } 
-            else if (underCapacity.Count > 0) 
+                message = RayMessages.GetLoginMixed(NaturalJoin(underCapacity), underCapacity.Count, NaturalJoin(idle), idle.Count, smooth.Count);
+            }
+            else if (underCapacity.Count > 0)
             {
-                message = RayMessages.GetLoginUnderCapacity(NaturalJoin(underCapacity));
-            } 
+                message = RayMessages.GetLoginUnderCapacity(NaturalJoin(underCapacity), underCapacity.Count, smooth.Count);
+            }
             else if (idle.Count > 0)
             {
-                message = RayMessages.GetLoginIdle(NaturalJoin(idle));
+                message = RayMessages.GetLoginIdle(NaturalJoin(idle), idle.Count, smooth.Count);
+            }
+            else if (smooth.Count > 0)
+            {
+                if (!Config.ReportSmoothOperations.Value)
+                    return;
+                message = RayMessages.GetLoginSmooth(NaturalJoin(smooth), smooth.Count);
             }
             else
             {
