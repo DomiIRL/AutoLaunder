@@ -103,42 +103,45 @@ public static class RayMessages
 
     private static string SlangCash(int amount)
     {
-        if (amount == 0)   return "nothing";
-        if (amount < 350)  return "pocket change"; 
+        if (amount == 0)  return "nothing";
+        if (amount < 250) return "pocket change";
 
-        int rounded = Mathf.RoundToInt(amount / 500f) * 500;
-        int diff = rounded - amount;
+        int step    = amount < 1000 ? 500 : 1000;
+        int rounded = (int)System.Math.Round(amount / (float)step, System.MidpointRounding.AwayFromZero) * step;
+        int diff    = rounded - amount;
 
-        string prefix = diff switch
+        // normalise diff to a 0-1 scale relative to the step size
+        float norm = diff / (float)step;
+
+        string prefix = norm switch
         {
-            0               => "",
-            > 0 and <= 50   => "barely under ",
-            > 0 and <= 100  => "just under ",
-            > 0 and <= 200  => "a bit under ",
-            > 0 and <= 350  => "under ",
-            > 0             => "almost ",
-            >= -50          => "barely over ",
-            >= -100         => "just over ",
-            >= -200         => "a bit over ",
-            >= -350         => "over ",
-            _               => "about ",
+            0f                     => "",
+            > 0f and <= 0.05f      => "barely under ",
+            > 0f and <= 0.10f      => "just under ",
+            > 0f and <= 0.20f      => "a bit under ",
+            > 0f and <= 0.45f      => "under ",
+            > 0f                   => "almost ",
+            >= -0.05f              => "barely over ",
+            >= -0.10f              => "just over ",
+            >= -0.20f              => "a bit over ",
+            >= -0.45f              => "over ",
+            _                      => "about ",
         };
 
         string slang = rounded switch
         {
-            500                  => "five hundred",
-            1000                 => "a grand",
-            1500                 => "fifteen hundred",
-            2000                 => "two grand",
-            2500                 => "two and a half grand",
-            3000                 => "three grand",
-            3500                 => "three and a half grand",
-            4000                 => "four grand",
-            4500                 => "four and a half grand",
-            5000                 => "five grand",
-            <= 10000 when rounded % 1000 == 0 => $"{rounded / 1000} grand",
-            <= 10000             => $"~{rounded / 1000}k",
-            _                    => $"{rounded / 1000}k",
+            500   => "five hundred",
+            1000  => "a grand",
+            2000  => "two grand",
+            3000  => "three grand",
+            4000  => "four grand",
+            5000  => "five grand",
+            6000  => "six grand",
+            7000  => "seven grand",
+            8000  => "eight grand",
+            9000  => "nine grand",
+            10000 => "ten grand",
+            _     => $"{rounded / 1000} grand",
         };
 
         return prefix + slang;
