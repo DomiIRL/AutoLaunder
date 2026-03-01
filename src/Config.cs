@@ -41,7 +41,7 @@ public static class Config
 
         ReportSmoothOperations = _loginCategory.CreateEntry(
             "ReportSmoothOperations",
-            false,
+            true,
             "Also message when everything runs fine",
             "When enabled, the login summary will also send a message when all laundering operations are running at full capacity with no issues."
         );
