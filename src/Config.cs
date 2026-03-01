@@ -28,12 +28,8 @@ public static class Config
         );
     }
 
-    /// <summary>Re-reads entry values after a Mod Manager save event.</summary>
     public static void Reload()
     {
-        // MelonPreferences_Entry<T>.Value is always up-to-date after MelonPreferences saves.
-        // Nothing extra needed — callers read .Value directly.
-        // Method exists so the event handler in Main has a clear call-site to document intent.
     }
 }
 

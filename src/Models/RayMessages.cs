@@ -39,6 +39,30 @@ public static class RayMessages
         "{0} not done yet, {1} in progress. Better to restart full. - R",
     };
 
+    // {0} = natural joined list of business names running under capacity
+    private static readonly string[] LoginUnderCapacity =
+    {
+        "Running under capacity at {0} — could be doing more. - R",
+        "Not hitting full loads at {0}. Worth topping up. - R",
+        "{0} is running short. Fix it next cycle. - R",
+    };
+
+    // {0} = natural joined list of business names with no ops running
+    private static readonly string[] LoginIdle =
+    {
+        "Nothing running at {0}. Check the safes. - R",
+        "Ops stopped at {0}. Might be dry, might not. Worth checking. - R",
+        "{0} is just sitting there. No ops running. - R",
+    };
+
+    // {0} = under-capacity list, {1} = idle list
+    private static readonly string[] LoginMixed =
+    {
+        "Running under load at {0}. Also nothing going at {1} — check those. - R",
+        "Short on capacity at {0}. Plus {1} has stopped entirely. - R",
+        "{0} isn't running full. And {1} isn't even running. - R",
+    };
+
     public static string GetWaiting(string businessName, int activeOperations)
         => string.Format(Pick(Waiting), businessName, SlangOps(activeOperations));
 
@@ -54,7 +78,15 @@ public static class RayMessages
     public static string GetHealthy(string businessName, int runsLeft, float cashLeft)
         => string.Format(Pick(Healthy), businessName, SlangCash(Mathf.FloorToInt(cashLeft)), SlangRuns(runsLeft));
 
-    // Indexed variants for deterministic testing
+    public static string GetLoginUnderCapacity(string underCapacityList)
+        => string.Format(Pick(LoginUnderCapacity), underCapacityList);
+
+    public static string GetLoginIdle(string idleList)
+        => string.Format(Pick(LoginIdle), idleList);
+
+    public static string GetLoginMixed(string underCapacityList, string idleList)
+        => string.Format(Pick(LoginMixed), underCapacityList, idleList);
+
     internal static string GetDry(string businessName, int variant)
         => string.Format(Pick(Dry, variant), businessName);
 
@@ -70,7 +102,7 @@ public static class RayMessages
     internal static string GetWaiting(string businessName, int activeOperations, int variant)
         => string.Format(Pick(Waiting, variant), businessName, SlangOps(activeOperations));
 
-    // ── Slang formatters ─────────────────────────────────────────────────────
+    // Slang formatters
 
     private static string SlangCash(int amount)
     {

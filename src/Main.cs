@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AutoLaunder.Services;
 using MelonLoader;
 
 [assembly: MelonInfo(typeof(AutoLaunder.Main), "AutoLaunder", "1.0", "DomiIRL")]
@@ -10,7 +11,8 @@ namespace AutoLaunder
 {
     public class Main : MelonMod
     {
-        private bool _modManagerFound = false;
+        private bool _modManagerFound;
+        private bool _loginSummaryCoroutineStarted;
 
         public override void OnInitializeMelon()
         {
@@ -43,10 +45,24 @@ namespace AutoLaunder
         public override void OnDeinitializeMelon()
         {
             if (_modManagerFound)
-            {
                 UnsubscribeFromModManagerEvents();
-            }
         }
+
+        public override void OnSceneWasLoaded(int buildIndex, string sceneName)
+        {
+            CustomMessengerService.Reset();
+            _loginSummaryCoroutineStarted = false;
+        }
+
+        public override void OnSceneWasInitialized(int buildIndex, string sceneName)
+        {
+            if (sceneName?.Contains("Main") != true || _loginSummaryCoroutineStarted) return;
+
+            _loginSummaryCoroutineStarted = true;
+            MelonCoroutines.Start(LoginSummaryService.Run());
+        }
+
+        // ── Mod Manager wiring ────────────────────────────────────────────────
 
         private void SubscribeToModManagerEvents()
         {
@@ -72,14 +88,11 @@ namespace AutoLaunder
         {
             try { ModManagerPhoneApp.ModSettingsEvents.OnPhonePreferencesSaved -= HandleSettingsUpdate; } catch { /* ignored */ }
             try { ModManagerPhoneApp.ModSettingsEvents.OnMenuPreferencesSaved -= HandleSettingsUpdate; } catch { /* ignored */ }
-            LoggerInstance.Msg("[AutoLaunder] Unsubscribed from Mod Manager save events.");
         }
 
         private void HandleSettingsUpdate()
         {
             Config.Reload();
-            LoggerInstance.Msg("[AutoLaunder] Settings reloaded from Mod Manager save.");
         }
     }
 }
-

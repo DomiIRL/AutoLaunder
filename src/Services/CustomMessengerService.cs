@@ -13,6 +13,10 @@ public static class CustomMessengerService
 
     private static MSGConversation _conversation;
 
+    public static void Reset() => _conversation = null;
+
+    public static bool TryInitialize() => GetOrCreateConversation() != null;
+
     public static void SendMessage(string message)
     {
         try
@@ -44,10 +48,7 @@ public static class CustomMessengerService
             .FirstOrDefault(npc => npc.ID == RayNpcId);
 
         if (ray == null)
-        {
-            MelonLogger.Warning("[AutoLaunder] Ray not found in scene — cannot create R conversation.");
             return null;
-        }
         
         _conversation = new MSGConversation(ray, ContactName);
         _conversation.SetIsKnown(false); // hide name and avatar
