@@ -39,7 +39,6 @@ public static class RayMessages
         "{0} not done yet, {1} in progress. Better to restart full.",
     };
 
-    // {0} = natural joined list of business names running under capacity
     private static readonly string[] LoginUnderCapacity =
     {
         "Running under capacity at {0} — could be doing more.",
@@ -47,7 +46,6 @@ public static class RayMessages
         "{0} is running short. Should fix it next cycle.",
     };
 
-    // {0} = natural joined list of business names with no ops running
     private static readonly string[] LoginIdle =
     {
         "Nothing running at {0}. Check the safes.",
@@ -55,7 +53,6 @@ public static class RayMessages
         "{0} is just sitting there. Ran out of paper?",
     };
 
-    // {0} = under-capacity list, {1} = idle list
     private static readonly string[] LoginMixed =
     {
         "Running under load at {0}. Also nothing going on at {1} — check those.",
