@@ -18,7 +18,12 @@ public static class CompleteOperationPatch
 
     [HarmonyPostfix]
     public static void Postfix(ref Business __instance, ref LaunderingOperation op)
-    { 
+    {
+        // Multiplayer safety: this flow mutates storage + starts operations,
+        // so only the server may execute it.
+        if (!InstanceFinder.IsServer)
+            return;
+
         // Count operations still running AFTER this one completed
         // CompleteOperation removes `op` before calling postfix, so any remaining
         // entries in LaunderingOperations are truly still active
@@ -33,7 +38,7 @@ public static class CompleteOperationPatch
             }
             else
             {
-                MelonLogger.Msg($"[AutoLaunder] {__instance.propertyName} — still waiting, already notified.");
+                MelonLogger.Msg($"[AutoLaunder] {__instance.propertyName} still waiting, already notified.");
             }
             return;
         }
@@ -62,7 +67,7 @@ public static class CompleteOperationPatch
         float remaining = CashStorageService.DrainCashFromStorage(__instance, capacity);
         float cashTaken = capacity - remaining;
 
-        if (cashTaken > 0 && InstanceFinder.IsServer)
+        if (cashTaken > 0f)
         {
             __instance.StartLaunderingOperation(cashTaken, 0);
             float value = NetworkSingleton<VariableDatabase>.Instance.GetValue<float>("LaunderingOperationsStarted");
@@ -72,8 +77,6 @@ public static class CompleteOperationPatch
         float totalCashLeft = CashStorageService.GetTotalCash(__instance);
         int runsLeft = CashStorageService.GetRunsLeft(totalCashLeft, __instance.LaunderCapacity);
 
-
         RayMessengerService.SendStatusMessage(__instance.propertyName, cashTaken, __instance.LaunderCapacity, runsLeft, totalCashLeft);
     }
 }
-

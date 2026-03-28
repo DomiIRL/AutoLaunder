@@ -2,6 +2,7 @@ using Il2CppScheduleOne.Property;
 using Il2CppScheduleOne.ObjectScripts;
 using Il2CppScheduleOne.Storage;
 using Il2CppScheduleOne.ItemFramework;
+using Il2CppFishNet;
 using MelonLoader;
 using UnityEngine;
 
@@ -12,6 +13,10 @@ public static class CashStorageService
 
     public static float DrainCashFromStorage(Business business, float amount)
     {
+        // Defensive guard: never mutate cash on non-server peers.
+        if (!InstanceFinder.IsServer)
+            return amount;
+
         float remaining = amount;
 
         foreach (var placeable in business.GetBuildablesOfType<PlaceableStorageEntity>())
