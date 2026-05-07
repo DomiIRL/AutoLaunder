@@ -1,23 +1,14 @@
-# Ignore Rider/IDEA settings
-.idea/
-*.DotSettings.user
+bin-debug/
+bin-release/
+[Oo]bj/
+[Bb]in/
 
-# Build artifacts
-bin/
-obj/
-libs/
+.settings/
 
-# VS + Rider specific
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
+*.swf
+*.air
+*.ipa
+*.apk
 
-# Temporary files
-*.log
-*.tmp
-
-# OS-specific
-.DS_Store
-Thumbs.db
-
+*.ps1
+Skd1_AutoLaunder.sln
