@@ -78,7 +78,7 @@ public static class Config
 
         TacoTicklersCapacity = _capacityCategory.CreateEntry(
             "TacoTicklersCapacity",
-            80000f,
+            8000f,
             "Taco Ticklers Max Capacity",
             "Sets the maximum amount that can be laundered in a single operation at Taco Ticklers."
         );
