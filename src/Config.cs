@@ -6,9 +6,16 @@ public static class Config
 {
     private static MelonPreferences_Category _category = null!;
     private static MelonPreferences_Category _loginCategory = null!;
+    private static MelonPreferences_Category _capacityCategory = null!;
 
     public static MelonPreferences_Entry<bool> WaitForLastOperation = null!;
     public static MelonPreferences_Entry<bool> OnlyStartAtMaxCapacity = null!;
+
+    public static MelonPreferences_Entry<float> LaundromatCapacity = null!;
+    public static MelonPreferences_Entry<float> PostOfficeCapacity = null!;
+    public static MelonPreferences_Entry<float> CarWashCapacity = null!;
+    public static MelonPreferences_Entry<float> TacoTicklersCapacity = null!;
+
     public static MelonPreferences_Entry<bool> SendLoginSummary = null!;
     public static MelonPreferences_Entry<bool> ReportSmoothOperations = null!;
 
@@ -45,10 +52,41 @@ public static class Config
             "Also message when everything runs fine",
             "When enabled, the login summary will also send a message when all laundering operations are running at full capacity with no issues."
         );
+
+        _capacityCategory = MelonPreferences.CreateCategory("AutoLaunder_03_Capacities", "Business Capacities");
+
+        LaundromatCapacity = _capacityCategory.CreateEntry(
+            "LaundromatCapacity",
+            2000f,
+            "Laundromat Max Capacity",
+            "Sets the maximum amount that can be laundered in a single operation at the Laundromat."
+        );
+
+        PostOfficeCapacity = _capacityCategory.CreateEntry(
+            "PostOfficeCapacity",
+            4000f,
+            "Post Office Max Capacity",
+            "Sets the maximum amount that can be laundered in a single operation at the Post Office."
+        );
+
+        CarWashCapacity = _capacityCategory.CreateEntry(
+            "CarWashCapacity",
+            6000f,
+            "Car Wash Max Capacity",
+            "Sets the maximum amount that can be laundered in a single operation at the Car Wash."
+        );
+
+        TacoTicklersCapacity = _capacityCategory.CreateEntry(
+            "TacoTicklersCapacity",
+            8000f,
+            "Taco Ticklers Max Capacity",
+            "Sets the maximum amount that can be laundered in a single operation at Taco Ticklers."
+        );
     }
 
     public static void Reload()
     {
+        Services.CapacityService.ApplyAll();
     }
 }
 
