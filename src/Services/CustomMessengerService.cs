@@ -10,6 +10,7 @@ public static class CustomMessengerService
 {
     private const string RayNpcId    = "ray_hoffman";
     private const string ContactName = "R";
+    private const string ConversationId = "autolaunder_r";
 
     private static MSGConversation _conversation;
 
@@ -43,13 +44,19 @@ public static class CustomMessengerService
             return _conversation;
         }
 
-        NPC ray = Object.FindObjectsOfType<NPC>()
-            .FirstOrDefault(npc => npc.ID == RayNpcId);
+        NPC ray = NPCManager.GetNPC(RayNpcId);
 
         if (ray == null)
             return null;
         
-        _conversation = new MSGConversation(ray, ContactName);
+        MessageContactInfo contact = new MessageContactInfo(
+            ContactName,
+            ray.ID,
+            ray.MugshotSprite,
+            canConversationBeHidden: false,
+            displayRelationshipInfo: false);
+
+        _conversation = new MSGConversation(contact, ConversationId);
         _conversation.SetIsKnown(false); // hide name and avatar
         return _conversation;
     }
