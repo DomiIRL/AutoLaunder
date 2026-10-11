@@ -19,6 +19,6 @@ This mod makes laundering money more efficient and less time consuming by automa
 
 ## Requirements
 
-- Schedule I
-- MelonLoader
+- Schedule I 0.4.7 or newer
+- MelonLoader 0.7.2 or newer
 

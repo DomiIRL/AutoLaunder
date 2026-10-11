@@ -3,7 +3,7 @@ using System.Linq;
 using AutoLaunder.Services;
 using MelonLoader;
 
-[assembly: MelonInfo(typeof(AutoLaunder.Main), "AutoLaunder", "2.1", "DomiIRL")]
+[assembly: MelonInfo(typeof(AutoLaunder.Main), "AutoLaunder", "2.2", "DomiIRL")]
 [assembly: MelonGame("TVGS", "Schedule I")]
 [assembly: MelonOptionalDependencies("ModManager&PhoneApp")]
 
