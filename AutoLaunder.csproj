@@ -12,6 +12,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>libs\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppScheduleOne.Core">
+      <HintPath>libs\Il2CppScheduleOne.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Il2CppFishNet.Runtime">
       <HintPath>libs\Il2CppFishNet.Runtime.dll</HintPath>
     </Reference>

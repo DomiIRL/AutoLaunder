@@ -1,8 +1,6 @@
-using System.Linq;
 using Il2CppScheduleOne.Messaging;
 using Il2CppScheduleOne.NPCs;
 using MelonLoader;
-using UnityEngine;
 
 namespace AutoLaunder.Services;
 
